@@ -1,4 +1,4 @@
-package com.company;
+package com.lecture;
 
 import java.sql.*;
 import java.util.Properties;
@@ -26,6 +26,7 @@ public class Main {
         PreparedStatement stmt =
                 connection.prepareStatement("SELECT * FROM employees WHERE salary > ?");
 
+        System.out.print("Enter the salary: ");
         String salary = sc.nextLine();
         stmt.setDouble(1, Double.parseDouble(salary));
         ResultSet rs = stmt.executeQuery();
