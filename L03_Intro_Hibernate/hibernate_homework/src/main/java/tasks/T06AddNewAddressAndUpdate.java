@@ -20,15 +20,18 @@ public class T06AddNewAddressAndUpdate {
         Address newAddress = new Address();
         newAddress.setText("Vitoshka 15");
 
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("soft_uni");
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityManagerFactory entityManagerFactory =
+                Persistence.createEntityManagerFactory("soft_uni");
+        EntityManager entityManager =
+                entityManagerFactory.createEntityManager();
 
         entityManager.getTransaction().begin();
 
         entityManager.persist(newAddress);
 
         entityManager.createQuery(
-                "update Employee as e set e.address = :newAddressId where e.lastName = :lastName")
+                "update Employee as e set e.address = :newAddressId " +
+                        "where e.lastName = :lastName")
                 .setParameter("newAddressId", newAddress)
                 .setParameter("lastName", lastNameEmployee)
                 .executeUpdate();

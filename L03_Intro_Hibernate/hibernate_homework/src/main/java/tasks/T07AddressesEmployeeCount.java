@@ -10,12 +10,15 @@ import java.util.List;
 
 public class T07AddressesEmployeeCount {
     public static void main(String[] args) {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("soft_uni");
+        EntityManagerFactory entityManagerFactory =
+                Persistence.createEntityManagerFactory("soft_uni");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         entityManager.getTransaction().begin();
-        Query query = entityManager.createQuery("select a from Address as a where a.id not in (296,297)" +
-                "order by a.employees.size desc", Address.class).setMaxResults(10);
+        Query query = entityManager.createQuery(
+                "select a from Address as a " +
+                "order by a.employees.size desc", Address.class)
+                .setMaxResults(10);
 
         List<Address> resultList = query.getResultList();
         StringBuilder stringBuilder = new StringBuilder();
@@ -27,6 +30,8 @@ public class T07AddressesEmployeeCount {
         }
 
         System.out.println(stringBuilder);
+
+        entityManager.getTransaction().commit();
         entityManager.close();
     }
 }

@@ -16,12 +16,15 @@ public class T04EmployeesWithSalary {
 
         entityManager.getTransaction().begin();
 
-        Query query = entityManager.createQuery("Select e from Employee as e where  e.salary > 50000");
+        Query query = entityManager.createQuery(
+                "Select e from Employee as e where  e.salary > 50000",Employee.class);
 
         List<Employee> resultList = query.getResultList();
         for (Employee employee : resultList) {
             System.out.println(employee.getFirstName());
         }
+
+        entityManager.getTransaction().commit();
         entityManager.close();
     }
 }

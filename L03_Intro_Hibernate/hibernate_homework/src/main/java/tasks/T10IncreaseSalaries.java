@@ -28,19 +28,22 @@ public class T10IncreaseSalaries {
                 "Tool"
         );
 
-        Query de = entityManager.createQuery("select d from Department  as d where d.name in (:de)").setParameter("de", departments);
-        List<Department> resultList1 = de.getResultList();
+        Query de = entityManager.createQuery(
+                "select d from Department  as d where d.name in (:de)", Department.class)
+                .setParameter("de", departments);
+        List<Department> allDepartmentsWithThatName = de.getResultList();
 
         entityManager
                 .createQuery("UPDATE Employee e" +
                         " SET e.salary = e.salary * 1.12" +
                         " WHERE e.department IN (:departmentsS)")
-                .setParameter("departmentsS",resultList1)
+                .setParameter("departmentsS",allDepartmentsWithThatName)
                 .executeUpdate();
 
 
-        Query query = entityManager.createQuery("select e from Employee  as e where e.department in " +
-                "(:departmentsS)").setParameter("departmentsS", resultList1);
+        Query query = entityManager.createQuery(
+                "select e from Employee  as e where e.department in " +
+                "(:departmentsS)").setParameter("departmentsS", allDepartmentsWithThatName);
 
         List<Employee> resultList = query.getResultList();
 

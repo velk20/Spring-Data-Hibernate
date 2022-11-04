@@ -19,7 +19,8 @@ public class T08GetEmployeeProject {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("soft_uni");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Query id = entityManager.createQuery("select e from Employee  as e where e.id = :ID")
+        Query id = entityManager.createQuery(
+                "select e from Employee  as e where e.id = :ID")
                 .setParameter("ID", employeeId);
 
         List<Employee> resultList = id.getResultList();
@@ -31,7 +32,10 @@ public class T08GetEmployeeProject {
                     employee.getLastName(),
                     employee.getJobTitle()));
 
-            Set<Project> projectSet = employee.getProjects().stream().sorted(Comparator.comparing(Project::getName)).collect(Collectors.toCollection(LinkedHashSet::new));
+            Set<Project> projectSet = employee.getProjects().stream()
+                    .sorted(Comparator.comparing(Project::getName))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+
             for (Project project : projectSet) {
                 st.append(String.format("\t%s\n", project.getName()));
             }
@@ -39,6 +43,7 @@ public class T08GetEmployeeProject {
             System.out.println(st.toString().trim());
 
         }
+        entityManager.getTransaction().commit();
 
         entityManager.close();
 

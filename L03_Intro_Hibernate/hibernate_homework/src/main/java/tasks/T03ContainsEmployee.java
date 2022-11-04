@@ -29,16 +29,16 @@ public class T03ContainsEmployee {
 
         entityManager.getTransaction().begin();
 
-        Query query = entityManager.createQuery("Select count(*) from Employee where concat(first_name,' ',last_name)" +
-                " = :name");
-        query.setParameter("name", firstName + " " + lastName);
+        Long res = entityManager.createQuery(
+                "Select count(*) from Employee where concat(first_name,' ',last_name)" +
+                " = :name",Long.class)
+                .setParameter("name", firstName + " " + lastName)
+                .getSingleResult();
 
-        List<Long> resultList = query.getResultList();
-
-        if (resultList.get(0) >= 1L) {
-            System.out.println("Yes");
-        } else {
+        if (res == 0) {
             System.out.println("No");
+        } else {
+            System.out.println("Yes");
         }
 
 

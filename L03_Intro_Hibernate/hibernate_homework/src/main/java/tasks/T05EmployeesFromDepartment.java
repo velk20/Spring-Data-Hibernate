@@ -16,21 +16,25 @@ public class T05EmployeesFromDepartment {
 
         entityManager.getTransaction().begin();
 
-        Query query = entityManager.createQuery("select e from Employee as e join e.department " +
+        Query query = entityManager.createQuery(
+                "select e from Employee as e " +
                 "order by e.salary " +
-                ",e.id ");
+                ",e.id ",
+                Employee.class);
 
         List<Employee> resultList = query.getResultList();
         resultList.stream()
                 .filter(e->e.getDepartment().getName().equals("Research and Development"))
                 .forEach(
-                employee->System.out.printf("%s %s from %s - $%.2f\n",
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getDepartment().getName(),
-                employee.getSalary())
+                employee->
+                        System.out.printf("%s %s from %s - $%.2f\n",
+                        employee.getFirstName(),
+                        employee.getLastName(),
+                        employee.getDepartment().getName(),
+                        employee.getSalary())
         );
 
+        entityManager.getTransaction().commit();
         entityManager.close();
     }
 }
