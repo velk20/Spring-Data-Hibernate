@@ -2,7 +2,9 @@ package com.example.springdataintro.models;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -55,11 +57,17 @@ public class User {
         this.age = age;
     }
 
-    public List<Account> getAccounts() {
-        return accountList;
+    public List<Long> getAccountIds() {
+        return this.accountList
+                .stream()
+                .map(Account::getId)
+                .collect(Collectors.toList());
     }
 
-    public void setAccounts(List<Account> accounts) {
-        this.accountList = accounts;
+    public void addAccount(Account account) {
+    }
+
+    public void removeAccount(Account account) {
+
     }
 }
