@@ -5,7 +5,9 @@ import com.example.springintro.model.dto.BookSummary;
 import com.example.springintro.model.entity.AgeRestriction;
 import com.example.springintro.model.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -52,4 +54,18 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "b.price as price from Book as b " +
             "where b.author.id = 7")
     List<BookSummary> getBookSummary();
+
+    @Modifying
+    @Query("update Book as b " +
+            "set b.copies = b.copies + :copies " +
+            "where b.releaseDate > :date")
+    Integer increaseBookCopiesAfterDate(LocalDate date, int copies);
+
+    @Modifying
+    @Query("delete from Book as b " +
+            "where b.copies < :copies")
+    int removeBooksLowerThatGivenCopies(int copies);
+
+    @Query(value = "CALL get_count_author_books(:firstName,:lastName);",nativeQuery = true)
+    int getCountOfBooksByAuthor(String firstName, String lastName);
 }

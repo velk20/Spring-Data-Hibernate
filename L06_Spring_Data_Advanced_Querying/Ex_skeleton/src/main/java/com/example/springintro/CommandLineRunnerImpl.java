@@ -33,11 +33,25 @@ public class CommandLineRunnerImpl implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        _11_AllBooksByTitle("Things Fall Apart");
+        String firstName = scanner.nextLine();
+        String lastName = scanner.nextLine();
 
+        _14_StoreProcedure(firstName, lastName);
     }
 
+    private void _14_StoreProcedure(String firstName, String lastName) {
+        int countOfBooksByAuthor = this.bookService.getCountOfBooksByAuthor(firstName, lastName);
+        System.out.println("Count of books: " + countOfBooksByAuthor);
+    }
+    private void _13_RemoveBooks(int amount) {
+        int deletedBooks = this.bookService.removeBooksLowerThatGivenCopies(amount);
+        System.out.println("Deleted books: " + deletedBooks);
+    }
+    private void _12_IncreaseBookCopies(String date, int copies) {
+        Integer countBooks = this.bookService.increaseBookCopiesAfterDate(date, copies);
 
+        System.out.println("Added copies: " + countBooks * copies);
+    }
     private void _11_AllBooksByTitle(String title) {
         List<BookInformationDTO> allByTitle = this.bookService.findAllByTitle(title);
         for (BookInformationDTO dto : allByTitle) {

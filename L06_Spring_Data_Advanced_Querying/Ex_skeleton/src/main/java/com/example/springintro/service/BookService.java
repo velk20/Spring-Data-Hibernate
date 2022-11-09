@@ -36,4 +36,10 @@ public interface BookService {
     List<BookInformationDTO> findAllByTitle(String title);
     List<BookSummary> getBookSummary();
 
+    Integer increaseBookCopiesAfterDate(String date, int copies);
+
+    int removeBooksLowerThatGivenCopies(int copies);
+
+    int getCountOfBooksByAuthor(String firstName, String lastName);
+
 }

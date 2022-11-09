@@ -9,14 +9,17 @@ import com.example.springintro.service.BookService;
 import com.example.springintro.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -81,6 +84,29 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public int getCountOfBooksByAuthor(String firstName, String lastName) {
+        return this.bookRepository.getCountOfBooksByAuthor(firstName, lastName);
+    }
+
+    @Override
+    @Transactional
+    public int removeBooksLowerThatGivenCopies(int copies) {
+        return this.bookRepository.removeBooksLowerThatGivenCopies(copies);
+    }
+
+    @Override
+    @Transactional
+    public Integer increaseBookCopiesAfterDate(String date, int copies) {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .appendPattern("dd MMM yyyy")
+                .toFormatter(Locale.ENGLISH);
+
+        LocalDate after = LocalDate.parse(date, formatter);
+
+        return this.bookRepository.increaseBookCopiesAfterDate(after, copies);
+    }
     @Override
     public List<BookSummary> getBookSummary() {
         return this.bookRepository.getBookSummary();
