@@ -1,5 +1,7 @@
 package com.example.springintro.service.impl;
 
+import com.example.springintro.model.dto.BookInformationDTO;
+import com.example.springintro.model.dto.BookSummary;
 import com.example.springintro.model.entity.*;
 import com.example.springintro.repository.BookRepository;
 import com.example.springintro.service.AuthorService;
@@ -77,6 +79,58 @@ public class BookServiceImpl implements BookService {
                         book.getReleaseDate(),
                         book.getCopies()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookSummary> getBookSummary() {
+        return this.bookRepository.getBookSummary();
+    }
+
+    @Override
+    public List<BookInformationDTO> findAllByTitle(String title) {
+        return this.bookRepository.findAllByTitle(title);
+    }
+
+    @Override
+    public Long countDistinctByTitleLength(int len) {
+        return this.bookRepository.countDistinctByTitleLength(len);
+    }
+
+    @Override
+    public List<Book> findAllByAuthorLastNameIgnoreCaseContaining(String str) {
+        return bookRepository.findAllByAuthorLastNameIgnoreCaseContaining(str.toLowerCase());
+    }
+
+    @Override
+    public List<Book> findAllByTitleContainingIgnoreCase(String str) {
+        return this.bookRepository.findAllByTitleContainingIgnoreCase(str);
+    }
+
+    @Override
+    public List<Book> findAllBooksBeforeReleasedDate(LocalDate localDate) {
+        return this.bookRepository.findAllByReleaseDateBefore(localDate);
+    }
+
+    @Override
+    public List<Book> findNotReleasedIn(int localDateYear) {
+        return this.bookRepository.findByReleaseDateBeforeOrReleaseDateAfter(
+                LocalDate.of(localDateYear, 1, 1),
+                LocalDate.of(localDateYear, 12, 31));
+    }
+
+    @Override
+    public List<Book> findAllByPriceNotBetween() {
+        return this.bookRepository.findAllByPriceNotBetween(BigDecimal.valueOf(5), BigDecimal.valueOf(40));
+    }
+
+    @Override
+    public List<Book> findAllByAgeRestriction(String ageRestriction) {
+        return this.bookRepository.findAllByAgeRestriction(AgeRestriction.valueOf(ageRestriction.toUpperCase()));
+    }
+
+    @Override
+    public List<Book> findGoldenBooks() {
+        return this.bookRepository.findAllByCopiesLessThan(5000);
     }
 
     private Book createBookFromInfo(String[] bookInfo) {

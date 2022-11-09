@@ -1,5 +1,6 @@
 package com.example.springintro.service.impl;
 
+import com.example.springintro.model.dto.BookCopiesDTO;
 import com.example.springintro.model.entity.Author;
 import com.example.springintro.repository.AuthorRepository;
 import com.example.springintro.service.AuthorService;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,19 @@ public class AuthorServiceImpl implements AuthorService {
 
                     authorRepository.save(author);
                 });
+    }
+
+    @Override
+    public List<BookCopiesDTO> findAllByCountCopies() {
+        return this.authorRepository.findAllByCountCopies()
+                .stream()
+                .sorted(Comparator.comparing(BookCopiesDTO::getCopies).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Author> findAllByFirstNameEndingWith(String endString) {
+        return this.authorRepository.findAllByFirstNameEndingWith(endString);
     }
 
     @Override
