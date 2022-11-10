@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 @ToString
 public class EmployeeDTO {
     private String firstName;
+    private String lastName;
     private BigDecimal salary;
-    private String addressCity;
-
 
 }
