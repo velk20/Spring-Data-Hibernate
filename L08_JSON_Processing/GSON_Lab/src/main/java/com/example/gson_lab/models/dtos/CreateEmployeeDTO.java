@@ -1,7 +1,10 @@
-package com.example.labmodelmapper.entities.dto;
+package com.example.gson_lab.models.dtos;
 
 import com.google.gson.annotations.Expose;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

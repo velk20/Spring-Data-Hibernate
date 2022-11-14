@@ -35,7 +35,10 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        Thread thread = new Thread();
+        thread.start();
         Scanner scanner = new Scanner(System.in);
+        printAvailableCommands();
         String line = scanner.nextLine();
         while (!line.isBlank()) {
             try {
@@ -43,12 +46,27 @@ public class Main implements CommandLineRunner {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
+            printAvailableCommands();
             line = scanner.nextLine();
         }
 
+        System.out.println("Exiting...");
+
+        synchronized (thread) {
+            thread.wait(2000);
+        }
+
+        System.out.println("Good bye!");
+        thread.interrupt();
     }
 
+    private void printAvailableCommands() {
+        if (userService.getLoggedUser() != null) {
+            System.out.print(availableCommandsForLoggedUser());
+        }else{
+            System.out.print(availableCommandsForNonLoggedUser());
+        }
+    }
     private void commandOperations(String line) throws IllegalAccessException {
         String[] commands = line.split("\\|");
         String generalCommand = commands[0];
@@ -238,5 +256,54 @@ public class Main implements CommandLineRunner {
 
     private void noPermission() throws IllegalAccessException {
         throw new IllegalAccessException("No permission, try to login first");
+    }
+
+    private String availableCommandsForNonLoggedUser() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nEnter command:");
+        sb.append(System.lineSeparator());
+        sb.append("\t-RegisterUser|<email>|<password>|<confirmPassword>|<fullName>");
+        sb.append(System.lineSeparator());
+        sb.append("\t-LoginUser|<email>|<password>");
+        sb.append(System.lineSeparator());
+        sb.append("\t-Logout");
+        sb.append(System.lineSeparator());
+        sb.append("\t-Exit(Press Enter to exit!)");
+        sb.append(System.lineSeparator());
+        sb.append("Your command: ");
+        return sb.toString().trim();
+    }
+
+    private String availableCommandsForLoggedUser() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\nEnter command:");
+        sb.append(System.lineSeparator());
+        sb.append("\t-Logout");
+        sb.append(System.lineSeparator());
+        sb.append("\t-AllGames");
+        sb.append(System.lineSeparator());
+        sb.append("\t-DetailsGame|<gameTitle>");
+        sb.append(System.lineSeparator());
+        sb.append("\t-OwnedGames");
+        sb.append(System.lineSeparator());
+        sb.append("\t-AddItem|<gameTitle>");
+        sb.append(System.lineSeparator());
+        sb.append("\t-RemoveItem|<gameTitle>");
+        sb.append(System.lineSeparator());
+        sb.append("\t-BuyItem");
+        sb.append(System.lineSeparator());
+
+        if (userService.getLoggedUser().isAdmin()) {
+            sb.append("\t-AddGame|<title>|<price>|<size>|<trailer>|<thubnailURL>|<description>|<releaseDate>");
+            sb.append(System.lineSeparator());
+            sb.append("\t-EditGame|<id>|<values>");
+            sb.append(System.lineSeparator());
+            sb.append("\t-DeleteGame|<id>");
+            sb.append(System.lineSeparator());
+        }
+
+        sb.append("Your command: ");
+        return sb.toString().trim();
     }
 }

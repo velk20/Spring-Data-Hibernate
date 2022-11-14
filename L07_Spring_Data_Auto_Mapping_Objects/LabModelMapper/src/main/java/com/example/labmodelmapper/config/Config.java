@@ -17,4 +17,5 @@ public class Config {
     public Scanner createScanner() {
         return new Scanner(System.in);
     }
+
 }
