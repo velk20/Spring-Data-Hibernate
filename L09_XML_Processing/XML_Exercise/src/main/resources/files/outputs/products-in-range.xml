@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<products>
+    <product name="Allopurinol" price="518.50" seller="Emily Parker"/>
+    <product name="AIR" price="581.69" seller="Betty Lawson"/>
+    <product name="Agaricus Equisetum Special Order" price="585.93" seller="Sandra Riley"/>
+    <product name="AMARANTHUS PALMERI POLLEN" price="623.16" seller="Sandra Riley"/>
+    <product name="AVANDAMET" price="632.08"/>
+    <product name="Amitiza" price="666.58"/>
+    <product name="Ampicillin" price="674.63" seller="Eugene Stewart"/>
+    <product name="Acnezzol Base" price="710.60" seller="Christina Patterson"/>
+    <product name="Azithromycin" price="813.87" seller="Joshua Murray"/>
+    <product name="Aquafresh" price="849.93"/>
+    <product name="Aspirin" price="925.45" seller="Wanda Harris"/>
+</products>
