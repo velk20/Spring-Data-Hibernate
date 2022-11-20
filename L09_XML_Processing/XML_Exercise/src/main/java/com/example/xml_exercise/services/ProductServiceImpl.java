@@ -9,6 +9,7 @@ import com.example.xml_exercise.repositories.ProductRepository;
 import com.example.xml_exercise.repositories.UserRepository;
 import com.example.xml_exercise.utils.FilesPaths;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,7 @@ public class ProductServiceImpl implements ProductService{
     private final JAXBContext context;
     private final Random random;
 
+    @Autowired
     public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository, CategoryRepository categoryRepository, ModelMapper mapper,
                               @Qualifier("createProduct") JAXBContext context, Random random) {
         this.productRepository = productRepository;
