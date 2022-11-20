@@ -1,3 +1,130 @@
-##reading   from file 
+######################### Reading   from file 
     private final Path path = Path.of("src", "main", "resources", "files", "xml", "players.xml");
 	return Files.readString(path);
+	
+########################## Config.java
+	   @Bean
+    public Gson createGson() {
+        return new GsonBuilder().create();
+    }
+
+    @Bean
+    public Validator createValidator() {
+        return Validation.buildDefaultValidatorFactory().getValidator();
+    }
+
+    @Bean
+    public ModelMapper createMapper() {
+        return new ModelMapper();
+    }
+	
+############################## XML files
+	        this.jaxbContext = JAXBContext.newInstance("ClassDTOName".class);
+			//From XML to POJO
+			  Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			//From POJO to XML
+			  Marshaller marshaller = jaxbContext.createMarshaller();
+			  
+			    ImportPlayersRootDTO playersRootDTO = (ImportPlayersRootDTO) unmarshaller.unmarshal(Files.newBufferedReader(path));
+        return playersRootDTO.getPlayers()
+                .stream()
+                .map(this::importPlayer)
+                .collect(Collectors.joining("\n"));
+				
+				 private String importPlayer(PlayerDTO playerDTO) {
+        Set<ConstraintViolation<PlayerDTO>> errors = validator.validate(playerDTO);
+        if (!errors.isEmpty()) {
+            return "Invalid Player";
+        }
+
+        String[] dates = playerDTO.getBirthDate().split("/");
+        LocalDate localDate = LocalDate.of(Integer.parseInt(dates[2]), Integer.parseInt(dates[1]),
+                Integer.parseInt(dates[0]));
+
+
+
+        Player player = mapper.map(playerDTO, Player.class);
+
+        if (this.playerRepository.findByEmail(player.getEmail()).isPresent()) {
+            return "Invalid PLayer";
+        }
+
+        Optional<Town> town = this.townRepository.findByName(playerDTO.getTown().getName());
+        player.setTown(town.get());
+
+        Optional<Team> team = this.teamRepository.findByName(playerDTO.getTeam().getName());
+        player.setTeam(team.get());
+
+        Optional<Stat> stat = this.statRepository.findById(playerDTO.getStat().getId());
+        player.setStat(stat.get());
+
+        player.setBirthDate(localDate);
+
+        this.playerRepository.save(player);
+
+        return String.format("Successfully imported Player %s %s - %s", player.getFirstName(), player.getLastName(),
+                player.getPosition().name());
+    }
+	
+########################## JSON
+  String json = this.readTownsFileContent();
+        ImportTownDTO[] importTownDTOS = this.gson.fromJson(json, ImportTownDTO[].class);
+		
+		  return Arrays.stream(importTownDTOS)
+                .map(this::importTown)
+                .collect(Collectors.joining("\n"));
+				
+				 private String importTown(ImportTownDTO townDTO) {
+        Set<ConstraintViolation<ImportTownDTO>> validationErrors = this.validator.validate(townDTO);
+
+        if (!validationErrors.isEmpty()) {
+            return "Invalid Town";
+        }
+
+        Optional<Town> isTownExist = this.townRepository.findByName(townDTO.getName());
+
+        if (isTownExist.isPresent()) {
+            return "Invalid Town";
+        }
+        Town town = this.modelMapper.map(townDTO, Town.class);
+        this.townRepository.save(town);
+        return String.format("Successfully imported Town %s - %d", town.getName(), town.getPopulation());
+    }
+				
+################## ModeMapper Dates formatter
+ @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.addConverter(new Converter<String, LocalDate>() {
+            @Override
+            public LocalDate convert(MappingContext<String, LocalDate> mappingContext) {
+
+                LocalDate parse = LocalDate
+                        .parse(mappingContext.getSource(),
+                                DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+                return parse;
+            }
+        });
+        
+        modelMapper.addConverter(new Converter<String, LocalDateTime>() {
+            @Override
+            public LocalDateTime convert(MappingContext<String, LocalDateTime> mappingContext) {
+                LocalDateTime parse = LocalDateTime.parse(mappingContext.getSource(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                return parse;
+            }
+        });
+
+        modelMapper.addConverter(new Converter<String, LocalTime>() {
+            @Override
+            public LocalTime convert(MappingContext<String, LocalTime> mappingContext) {
+                LocalTime parse = LocalTime.parse(mappingContext.getSource(),
+                        DateTimeFormatter.ofPattern("HH:mm:ss"));
+                return parse;
+            }
+        });
+
+        return modelMapper;
+    }
