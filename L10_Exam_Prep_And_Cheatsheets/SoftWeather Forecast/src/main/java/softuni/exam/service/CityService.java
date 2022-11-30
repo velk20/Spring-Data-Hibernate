@@ -14,5 +14,6 @@ public interface CityService {
 	
 	String importCities() throws IOException;
     City findByCityName(String cityName);
+    City findByCityId(Long cityId);
 
 }

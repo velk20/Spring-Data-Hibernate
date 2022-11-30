@@ -14,6 +14,7 @@ import softuni.exam.util.ValidationUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static softuni.exam.util.ErrorMessages.INVALID_CITY;
@@ -64,7 +65,6 @@ public class CityServiceImpl implements CityService {
         }
 
         City city = mapper.map(importCityDTO, City.class);
-        city.setCountry(byCountryId);
 
         this.cityRepository.save(city);
         return String.format("Successfully imported city %s - %d", city.getCityName(), city.getPopulation());
@@ -73,5 +73,10 @@ public class CityServiceImpl implements CityService {
     @Override
     public City findByCityName(String cityName) {
         return this.cityRepository.findByCityName(cityName).orElse(null);
+    }
+
+    @Override
+    public City findByCityId(Long cityId) {
+        return this.cityRepository.findById(cityId).orElse(null);
     }
 }
